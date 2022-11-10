@@ -10,9 +10,9 @@ BOARD_CONFIG_FILE=""
 
 function create_users(){
     # create users and set password
-    useradd -m -G audio -s /bin/bash avnet
-    usermod -a -G video avnet
-    echo "avnet:avnet" | chpasswd
+#    useradd -m -G audio -s /bin/bash avnet
+#    usermod -a -G video avnet
+#    echo "avnet:avnet" | chpasswd
     echo "root:avnet" | chpasswd
 }
 
@@ -33,7 +33,7 @@ function install_apts(){
     protected_install local-apt-repository
     # update packages and install base
     apt-get update
-    # apt install board.ini->Apt 
+    # apt install board.ini->Apt
     install_apt $ROOTFS_BASE;
 
     post_call_function ${ROOTFS_BASE} "Apt" "all"

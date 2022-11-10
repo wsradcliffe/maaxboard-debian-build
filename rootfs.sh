@@ -1,12 +1,12 @@
 #!/bin/bash
 
-function create_users(){
-    # create users and set password
-    useradd -m -G audio -s /bin/bash avnet
-    usermod -a -G video avnet
-    echo "avnet:avnet" | chpasswd
-    echo "root:avnet" | chpasswd
-}
+#function create_users(){
+#    # create users and set password
+#    useradd -m -G audio -s /bin/bash avnet
+#    usermod -a -G video avnet
+#    echo "avnet:avnet" | chpasswd
+#    echo "root:avnet" | chpasswd
+#}
 
 function cp_board_ini(){
     local ROOTFS_BASE=$1
@@ -14,10 +14,10 @@ function cp_board_ini(){
     cp $m_file $ROOTFS_BASE"/tmp/"
 
     local includes=$(load_section $m_file "Include")
-    
+
     if [[ -n $includes ]];then
         local tmp_path=$(get_file_path ${m_file})
-        IFS_old=$IFS 
+        IFS_old=$IFS
         IFS=$'\n'
         for sect in ${includes[@]}
         do
@@ -30,7 +30,7 @@ function cp_board_ini(){
             fi
             # load_section2 $sub_file $m_section
             sed -i "s!${tmp_sub_file}!/tmp/${tmp_sub_file##*/}!g" $ROOTFS_BASE"/tmp/"${m_file##*/}
-            cp_board_ini $ROOTFS_BASE $sub_file 
+            cp_board_ini $ROOTFS_BASE $sub_file
         done
         IFS=$IFS_old
     fi
@@ -86,7 +86,7 @@ function prepare_system_config(){
     echo "Package: *" > etc/apt/preferences.d/local
     echo "Pin: origin """ >> etc/apt/preferences.d/local
     echo "Pin-Priority: 1000 ">> etc/apt/preferences.d/local
-    
+
     echo "/dev/mmcblk0p1  /boot           vfat    defaults        0       0" > etc/fstab
 
     local BORAD=$(load_config_file2 ${BOARD_CONFIG_FILE} "Base" "BORAD");
@@ -128,7 +128,7 @@ function prepare_qemu(){
 
 function install_tars(){
     local ROOTFS_BASE=$1
- 
+
     install_packages ${ROOTFS_BASE}
     install_auto_packages ${ROOTFS_BASE}
 }
@@ -197,7 +197,9 @@ function make_debian_rootfs(){
 
     local LOCAL_APT_PATH=${ROOTFS_BASE}/srv/local-apt-repository
     mkdir -p $LOCAL_APT_PATH
-    cp $DEB_PATH/* $LOCAL_APT_PATH
+    if ls -A1q $DEB_PATH/ | grep -q . ; then
+        cp $DEB_PATH/* $LOCAL_APT_PATH
+    fi
     install_third_stage $ROOTFS_BASE
 
     install_system $ROOTFS_BASE

@@ -89,7 +89,7 @@ function download_rootfs(){
     rm -f $local_file;
 
     download_file $file_path $tmp_path
-    
+
     if [[ $? == 0 ]];then
         echo "$1" >> $TMP_ROOTFS_PATH"/ok"
     else
@@ -173,7 +173,7 @@ function download_board_packages(){
     local sections3=$(load_section2 ${BOARD_CONFIG_FILE} "Auto")
     local sections4=$(load_section2 ${BOARD_CONFIG_FILE} "Rootfs")
     # local sections5=$(load_section2 ${BOARD_CONFIG_FILE} "Hooks")
-    IFS_old=$IFS 
+    IFS_old=$IFS
     IFS=$'\n'
     open_pip_async;
     mkdir -p $PACKAGES_PATH
@@ -265,10 +265,10 @@ function download_board_packages(){
 function install_packages(){
     local ROOTFS_BASE=$1
     local sections=$(load_section2 ${BOARD_CONFIG_FILE} "Packages");
-    
+
     pre_call_function ${ROOTFS_BASE} "Packages" "all"
-    
-    IFS_old=$IFS 
+
+    IFS_old=$IFS
     IFS=$'\n'
     for sect in ${sections[@]}
     do
@@ -309,7 +309,7 @@ function install_auto_packages(){
 
     pre_call_function ${ROOTFS_BASE} "Auto" "all"
 
-    IFS_old=$IFS 
+    IFS_old=$IFS
     IFS=$'\n'
     for sect in ${sections[@]}
     do
@@ -349,7 +349,7 @@ function install_apt(){
     local name;
     local value;
 
-    IFS_old=$IFS 
+    IFS_old=$IFS
     IFS=$'\n'
     for sect in ${sections[@]}
     do
@@ -370,15 +370,15 @@ function install_rootfs(){
     local sections=$(load_section2 ${BOARD_CONFIG_FILE} "Rootfs")
 
     pre_call_function ${ROOTFS_BASE} "Rootfs" "all"
-    IFS_old=$IFS 
+    IFS_old=$IFS
     IFS=$'\n'
     for sect in ${sections[@]}
     do
         value=$(parse_config_value $sect)
         key=$(parse_config_key $sect)
-  
+
         pre_call_function ${ROOTFS_BASE} "Rootfs" $key
-        
+
         model=${key:0-7}
         m=${key:0-4}
 
@@ -406,7 +406,7 @@ function install_rootfs(){
 function load_hooks(){
     local sections=$(load_section2 ${BOARD_CONFIG_FILE} "Hooks");
     local tmp_path=$(get_file_path ${BOARD_CONFIG_FILE})
-    IFS_old=$IFS 
+    IFS_old=$IFS
     IFS=$'\n'
     for sect in ${sections[@]}
     do

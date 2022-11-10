@@ -7,6 +7,15 @@
 set -e
 SCRIPT_NAME=${0##*/}
 
+pkgs=(
+    gawk wget diffstat unzip texinfo build-essential
+    chrpath socat libsdl1.2-dev xterm sed coreutils
+    make gcc g++ desktop-file-utils
+    libglu1-mesa-dev curl
+    cpio sudo locales kpartx
+    libncurses-dev flex bison openssl libssl-dev
+)
+
 readonly ABSOLUTE_FILENAME=`readlink -e "$0"`
 readonly ABSOLUTE_DIRECTORY=`dirname ${ABSOLUTE_FILENAME}`
 
@@ -20,7 +29,7 @@ readonly TMP_COMPILE_PATH=${ABSOLUTE_DIRECTORY}"/.compile"
 readonly LOG_PATH=${ABSOLUTE_DIRECTORY}"/logs"
 
 readonly SCRIPT_START_DATE=$(date "+%Y%m%d");
-readonly DEF_ROOTFS_TARBALL_NAME="rootfs_${SCRIPT_START_DATE}.tar.gz"  
+readonly DEF_ROOTFS_TARBALL_NAME="rootfs_${SCRIPT_START_DATE}.tar.gz"
 # readonly DEF_ROOTFS_IMG_NAME="debian_${DEB_RELEASE}_avnet_${SCRIPT_START_DATE}.img"
 
 
@@ -76,6 +85,27 @@ function usage()
     echo
 }
 
+is_pkg_installed() {
+    return $(dpkg-query -W -f '${Status}\n' "${1}" 2>&1|awk '/ok installed/{print 0;exit}{print 1}')
+}
+
+function check_dependencies(){
+    missing_pkgs=""
+
+    for pkg in ${pkgs[@]}; do
+        if ! $(is_pkg_installed $pkg) ; then
+            missing_pkgs+=" $pkg"
+        fi
+    done
+
+    if [ ! -z "$missing_pkgs" ]; then
+        cmd="apt install -y $missing_pkgs"
+        echo "Installing missing packages.."
+        echo $cmd
+        apt install -y $missing_pkgs > /dev/null 2>&1
+    fi
+}
+
 # make firmware for wl bcm module
 # $1 -- bcm git directory
 # $2 -- rootfs output dir
@@ -113,6 +143,8 @@ function make_prepare()
     mkdir -p ${LINUX_IMG_OUTPUT}
     mkdir -p ${LINUX_GCC_OUTPUT}
     mkdir -p ${G_ROOTFS_IMAGE_DIR}
+
+    check_dependencies
 }
 
 
@@ -226,7 +258,7 @@ function start(){
         log_error "${BOARD_CONFIG_FILE} not exist or empty!"
         exit -1;
     fi
-    
+
     [ "${PARAM_DEBUG}" == 1 ] && {
         log_info "Debug mode enabled!"
         set -x
