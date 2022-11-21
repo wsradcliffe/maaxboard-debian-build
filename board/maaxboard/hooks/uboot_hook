@@ -7,7 +7,7 @@
 
 function uboot_maaxboard_mini_code(){
     cd $1
-    local tag="maaxboard_v2021.04_5.10.35_2.0.0"
+    local tag="maaxboard_v2021.04_5.10.72-2.2.2"
     if [[ -d "./uboot-imx" ]];then
         local count=$(ls uboot-imx/ |wc -w)
         if [[ ${count} > 0 ]];then

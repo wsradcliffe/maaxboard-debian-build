@@ -7,7 +7,7 @@
 function linux_maaxboard_mini_code(){
     cd $1
     local linux_name="linux-imx"
-    local tag="maaxboard_5.10.35_2.0.0"
+    local tag="maaxboard_5.10.72-2.2.2"
     if [[ -d "./"${linux_name} ]];then
         local count=$(ls ${linux_name} |wc -w)
         if [[ ${count} > 0 ]];then

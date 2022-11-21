@@ -14,6 +14,9 @@ pkgs=(
     libglu1-mesa-dev curl
     cpio sudo locales kpartx
     libncurses-dev flex bison openssl libssl-dev
+    dkms libelf-dev libudev-dev libpci-dev libiberty-dev
+    autoconf llvm device-tree-compiler
+    debootstrap qemu-user-static
 )
 
 readonly ABSOLUTE_FILENAME=`readlink -e "$0"`
