@@ -53,6 +53,7 @@ function first_fat(){
 
     cp $PARAM_OUTPUT_DIR"/linux/Image" $first_fat_dir
     cp $PARAM_OUTPUT_DIR/linux/*.dtb $first_fat_dir
+    cp -R $PARAM_OUTPUT_DIR/linux/overlays $first_fat_dir
 
     # uEnv.txt
     local uEnv_file=$(load_config_file2 ${BOARD_CONFIG_FILE} "Compile" "uEnv_file");
@@ -74,6 +75,7 @@ function first_fat(){
     fi
 
     sync
+    sleep 1
     umount $first_fat_dir
     log_info "first fat done."
 }
@@ -135,12 +137,14 @@ function buidl_images(){
     #     fi
     # fi
     
-    cp -af ${PARAM_OUTPUT_DIR}/linux/modules/*  $rootfs_mnt
+    cp -af ${PARAM_OUTPUT_DIR}/linux/modules/lib/*  $rootfs_mnt/lib/
     sync
-
+    sleep 1
     umount $rootfs_mnt
 
+    sleep 1
     kpartx -d /dev/${loopName}
+    sleep 1
     losetup -d /dev/${loopName}
 
     mv ${images_name}.img $LINUX_IMG_OUTPUT
