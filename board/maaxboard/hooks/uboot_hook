@@ -19,8 +19,6 @@ function uboot_maaxboard_mini_code(){
     fi
     git clone -b ${tag} --single-branch https://github.com/wsradcliffe/uboot-imx.git
     cd uboot-imx
-    local tmp_path=$(get_file_path ${BOARD_CONFIG_FILE})
-    git apply ${tmp_path}/0001-maax-Fixup-mk-imx-boot.sh.patch
     local VERSION=`grep ^VERSION Makefile | cut -d' ' -f3`
     local PATCHLEVEL=`grep ^PATCHLEVEL Makefile | cut -d' ' -f3`
     local SUBLEVEL=`grep ^SUBLEVEL Makefile | cut -d' ' -f3`
