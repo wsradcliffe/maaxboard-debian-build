@@ -1,0 +1,10 @@
+# Required DTB file for imx8mq-evk
+fdt_file=imx8mq-evk.dtb
+
+# Enable HDMI display
+#enable_overlay_disp=hdmi
+
+# Uncomment to prevent blanking the display
+#consoleblank=0
+
+console=ttymxc0,115200 console=tty1 fbcon=rotate:0

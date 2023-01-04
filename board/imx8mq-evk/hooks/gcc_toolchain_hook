@@ -1,0 +1,62 @@
+#!/bin/bash
+# this script will be loaded,and run function[gcc_all_build] when needed
+# the "gcc_all_build" name must be fixed.
+# if need to define functions,please name "function gcc_[boardname]_*",that avoids overlapping names
+#
+
+# Select "7.3" or "9.2" to use pre-built SDK or "SDK" to use Yocto built SDK.
+# For "SDK", you need to build the Yocto SDK first.
+
+ARM_GCC_VERSION=9.2
+
+# prepare gcc
+# param $1 : Work directory
+# output src path ${LINUX_GCC_OUTPUT}
+function gcc_all_build(){
+    if [[ -n $CROSS_COMPILE ]];then
+        return 0;
+    fi
+
+    local BASE_ROOT=$1
+    pushd $BASE_ROOT
+
+    if [ "${ARM_GCC_VERSION}" == "SDK" ] ; then
+        source /opt/fsl-imx-wayland-lite/5.4-zeus/environment-setup-aarch64-poky-linux
+    else
+        if [ "${ARM_GCC_VERSION}" == "7.3" ] ; then
+            TOOLCHAIN="gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu"
+            TOOLCROSS="aarch64-linux-gnu-"
+        else ## gcc 9.2 default
+            ARM_GCC_VERSION="9.2"
+            TOOLCHAIN="gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu"
+            TOOLCROSS="aarch64-none-linux-gnu-"
+        fi
+
+        if [[ ! -s "./${TOOLCHAIN}.tar.xz" ]];then
+            log_info "start download gcc ${ARM_GCC_VERSION}...."
+            wget https://xterra2.avnet.com/embest/imx8m/debian-rootfs-util/-/raw/master/gcc/${TOOLCHAIN}.tar.xz?inline=false -O ${TOOLCHAIN}.tar.xz
+        fi
+
+        if [[ ! -d "./${TOOLCHAIN}/bin/" ]];then
+            if [[ -s "./${TOOLCHAIN}.tar.xz" ]] ;then
+                log_info "tar -Jxvf ${TOOLCHAIN}.tar.xz..."
+                tar -Jxvf "${TOOLCHAIN}.tar.xz"  > /dev/null 2>&1
+                cp "${TOOLCHAIN}.tar.xz" ${LINUX_GCC_OUTPUT}
+            fi
+        fi
+
+        export ARCH=arm64
+        export CROSS_COMPILE=${BASE_ROOT}/${TOOLCHAIN}/bin/${TOOLCROSS}
+    fi
+
+    # check required applications are installed
+    #command -v dtc >/dev/null 2>&1 || { echo "ERROR: Cannot find dtc, run 'sudo apt install device-tree-compiler' please"; exit; }
+    command -v ${CROSS_COMPILE}gcc >/dev/null 2>&1 || { cat << EEOF
+ERROR: ${CROSS_COMPILE}gcc not found,
+please install the toolchain first and export the enviroment
+like "export PATH=\$PATH:your_toolchain_path"
+EEOF
+        exit;
+    }
+    popd
+}
