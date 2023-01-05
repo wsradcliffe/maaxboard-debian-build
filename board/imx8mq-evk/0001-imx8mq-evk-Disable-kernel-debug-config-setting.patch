@@ -1,0 +1,29 @@
+From ab599a2c89d63e9807cf5cc902ac37f49c1f9b71 Mon Sep 17 00:00:00 2001
+From: Scott Radcliffe <scottr@avid-tech.com>
+Date: Thu, 5 Jan 2023 14:42:16 -0500
+Subject: [PATCH] [imx8mq-evk] Disable kernel debug config setting
+
+---
+ arch/arm64/configs/imx_v8_defconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
+index 65c676a91c3d..0ceffe10b6be 100644
+--- a/arch/arm64/configs/imx_v8_defconfig
++++ b/arch/arm64/configs/imx_v8_defconfig
+@@ -935,10 +935,10 @@ CONFIG_INDIRECT_PIO=y
+ CONFIG_CRC_CCITT=m
+ CONFIG_CMA_SIZE_MBYTES=32
+ CONFIG_PRINTK_TIME=y
+-CONFIG_DEBUG_INFO=y
++CONFIG_DEBUG_INFO=n
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_FS=y
+-CONFIG_DEBUG_KERNEL=y
++CONFIG_DEBUG_KERNEL=n
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_DEBUG_PREEMPT is not set
+ # CONFIG_FTRACE is not set
+-- 
+2.25.1
+

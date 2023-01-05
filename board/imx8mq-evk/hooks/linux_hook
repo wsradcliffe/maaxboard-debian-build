@@ -19,6 +19,8 @@ function linux_maaxboard_mini_code(){
     fi
     git clone -b ${tag} --single-branch https://github.com/nxp-imx/linux-imx.git
     cd ${linux_name}
+    local tmp_path=$(get_file_path ${BOARD_CONFIG_FILE})
+    git apply ${tmp_path}/0001-imx8mq-evk-Disable-kernel-debug-config-setting.patch
     VERSION=`grep ^VERSION Makefile | cut -d' ' -f3`
     PATCHLEVEL=`grep ^PATCHLEVEL Makefile | cut -d' ' -f3`
     SUBLEVEL=`grep ^SUBLEVEL Makefile | cut -d' ' -f3`

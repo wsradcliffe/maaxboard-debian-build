@@ -53,7 +53,7 @@ function first_fat(){
 
     cp $PARAM_OUTPUT_DIR"/linux/Image" $first_fat_dir
     cp $PARAM_OUTPUT_DIR/linux/*.dtb $first_fat_dir
-    cp -R $PARAM_OUTPUT_DIR/linux/overlays $first_fat_dir
+    [ -d "$PARAM_OUTPUT_DIR/linux/overlays" ] && cp -R $PARAM_OUTPUT_DIR/linux/overlays $first_fat_dir
 
     # uEnv.txt
     local uEnv_file=$(load_config_file2 ${BOARD_CONFIG_FILE} "Compile" "uEnv_file");
