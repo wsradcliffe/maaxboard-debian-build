@@ -87,7 +87,8 @@ function prepare_system_config(){
     echo "Pin: origin """ >> etc/apt/preferences.d/local
     echo "Pin-Priority: 1000 ">> etc/apt/preferences.d/local
 
-    echo "/dev/mmcblk0p1  /boot           vfat    defaults        0       0" > etc/fstab
+# This fails on imx8mq-evk when image is loaded on SD card, which is mmcblk1
+#    echo "/dev/mmcblk0p1  /boot           vfat    defaults        0       0" > etc/fstab
 
     local BORAD=$(load_config_file2 ${BOARD_CONFIG_FILE} "Base" "BORAD");
     echo "${BORAD}" > etc/hostname
